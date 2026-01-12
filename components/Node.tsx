@@ -602,14 +602,6 @@ const Node: React.FC<NodeProps> = ({
 
       <div className="bg-slate-950/80 p-2.5 flex items-center justify-between text-[9px] text-slate-600 font-mono border-t border-slate-800/50">
         <span>UID: {node.id.split("-").pop()}</span>
-        <div className="flex items-center gap-1.5">
-          <span
-            className={`size-1.5 rounded-full ${node.enabled ? "bg-emerald-500 animate-pulse" : "bg-slate-700"}`}
-          ></span>
-          <span className="uppercase tracking-tighter">
-            {node.enabled ? "Live" : "Off"}
-          </span>
-        </div>
       </div>
 
       {showGallery && (

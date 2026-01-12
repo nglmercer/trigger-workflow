@@ -41,13 +41,12 @@ const App: React.FC = () => {
   const [connections, setConnections] =
     useState<Connection[]>(INITIAL_CONNECTIONS);
   const [logs, setLogs] = useState<LogEntry[]>(INITIAL_LOGS);
+  const [zoom, setZoom] = useState(1);
   const [isDeploying, setIsDeploying] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showYaml, setShowYaml] = useState(false);
   const [showTestPanel, setShowTestPanel] = useState(false);
   const [showDebugger, setShowDebugger] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [zoom, setZoom] = useState(1);
 
   const [dragConn, setDragConn] = useState<ConnectionDrag | null>(null);
   const [hoveredSocket, setHoveredSocket] = useState<HoveredSocket | null>(
@@ -71,8 +70,8 @@ const App: React.FC = () => {
     if (!workspaceRef.current) return { x: e.pageX, y: e.pageY };
     const rect = workspaceRef.current.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left + workspaceRef.current.scrollLeft,
-      y: e.clientY - rect.top + workspaceRef.current.scrollTop,
+      x: (e.clientX - rect.left + workspaceRef.current.scrollLeft) / zoom,
+      y: (e.clientY - rect.top + workspaceRef.current.scrollTop) / zoom,
     };
   };
 
@@ -81,17 +80,13 @@ const App: React.FC = () => {
     if (el && workspaceRef.current) {
       const socketRect = el.getBoundingClientRect();
       const workspaceRect = workspaceRef.current.getBoundingClientRect();
+      // Calculate the position relative to the workspace container
+      // Since the workspace is transformed by zoom, we need to divide by zoom
+      const relativeX = socketRect.left - workspaceRect.left;
+      const relativeY = socketRect.top - workspaceRect.top;
       return {
-        x:
-          socketRect.left -
-          workspaceRect.left +
-          workspaceRef.current.scrollLeft +
-          socketRect.width / 2,
-        y:
-          socketRect.top -
-          workspaceRect.top +
-          workspaceRef.current.scrollTop +
-          socketRect.height / 2,
+        x: (relativeX + workspaceRef.current.scrollLeft) / zoom,
+        y: (relativeY + workspaceRef.current.scrollTop) / zoom,
       };
     }
     // Fallback if element not found (e.g. during first render)
@@ -360,6 +355,33 @@ const App: React.FC = () => {
     }
   };
 
+  // Save state to localStorage
+  useEffect(() => {
+    const state = {
+      nodes,
+      connections,
+      logs,
+      zoom,
+    };
+    localStorage.setItem("agnostic-trigger-workflow", JSON.stringify(state));
+  }, [nodes, connections, logs, zoom]);
+
+  // Load state from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem("agnostic-trigger-workflow");
+    if (savedState) {
+      try {
+        const state = JSON.parse(savedState);
+        if (state.nodes) setNodes(state.nodes);
+        if (state.connections) setConnections(state.connections);
+        if (state.logs) setLogs(state.logs);
+        if (state.zoom) setZoom(state.zoom);
+      } catch (error) {
+        console.error("Failed to load state from localStorage:", error);
+      }
+    }
+  }, []);
+
   const handleZoomIn = () => {
     setZoom((prev) => Math.min(prev + 0.1, 2));
   };
@@ -490,7 +512,7 @@ const App: React.FC = () => {
         zoom={zoom}
       />
 
-      <div className="fixed bottom-6 left-6 flex flex-col gap-3 z-40">
+      <div className="fixed bottom-6 left-6 flex flex-col gap-2 z-40">
         <BottomLeftHUD onAddNode={() => setShowModal(true)} />
 
         <div className="flex flex-col gap-2">
@@ -526,8 +548,6 @@ const App: React.FC = () => {
             logs={logs}
             onClose={() => setShowDebugger(false)}
             onClear={() => setLogs(INITIAL_LOGS)}
-            onTogglePause={() => setIsPaused((prev) => !prev)}
-            isPaused={false}
           />
         </aside>
       )}

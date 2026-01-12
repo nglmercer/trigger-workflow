@@ -95,25 +95,11 @@ export const RightHUD: React.FC<{
 export const BottomLeftHUD: React.FC<{ onAddNode: () => void }> = ({
   onAddNode,
 }) => (
-  <div className="flex flex-col gap-3">
-    <div className="backdrop-blur-xl bg-slate-900/70 border border-slate-700/50 shadow-2xl p-2 rounded-2xl space-y-2 ring-1 ring-white/5">
-      <button
-        onClick={onAddNode}
-        className="size-11 flex items-center justify-center rounded-xl bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/60 transition-all group relative"
-      >
-        <span className="material-symbols-outlined">add</span>
-        <span className="absolute left-full ml-4 px-2 py-1 bg-slate-800 text-[9px] text-white rounded opacity-0 group-hover:opacity-100 transition-all shadow-lg whitespace-nowrap pointer-events-none uppercase font-bold tracking-widest">
-          Add Node
-        </span>
-      </button>
-      <button className="size-11 flex items-center justify-center rounded-xl bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/60 transition-all">
-        <span className="material-symbols-outlined">category</span>
-      </button>
-    </div>
-    <div className="backdrop-blur-xl bg-slate-900/70 border border-slate-700/50 shadow-2xl p-2 rounded-2xl ring-1 ring-white/5">
-      <button className="size-11 flex items-center justify-center rounded-xl bg-slate-800/40 border border-slate-700/50 text-slate-400 hover:text-white transition-all">
-        <span className="material-symbols-outlined">help</span>
-      </button>
-    </div>
-  </div>
+  <button
+    onClick={onAddNode}
+    className="size-11 flex items-center justify-center rounded-xl backdrop-blur-xl bg-slate-900/70 border border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/60 shadow-2xl transition-all ring-1 ring-white/5"
+    title="Add Node"
+  >
+    <span className="material-symbols-outlined">add</span>
+  </button>
 );

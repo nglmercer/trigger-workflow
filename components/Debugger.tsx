@@ -5,16 +5,12 @@ interface DebuggerProps {
   logs: LogEntry[];
   onClose?: () => void;
   onClear?: () => void;
-  onTogglePause?: () => void;
-  isPaused?: boolean;
 }
 
 const Debugger: React.FC<DebuggerProps> = ({
   logs,
   onClose,
   onClear,
-  onTogglePause,
-  isPaused = false,
 }) => {
   const [filter, setFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -66,42 +62,17 @@ const Debugger: React.FC<DebuggerProps> = ({
             Execution Debugger
           </span>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span
-              className={`size-2 rounded-full ${
-                isPaused ? "bg-amber-500" : "bg-green-500 animate-pulse"
-              }`}
-            ></span>
-            <span className="text-[10px] uppercase font-bold text-slate-500">
-              {isPaused ? "Paused" : "Live"}
-            </span>
-          </div>
-          {onClose && (
-            <button
-              onClick={onClose}
-              className="text-slate-500 hover:text-white transition-colors"
-            >
-              <span className="material-symbols-outlined text-base">close</span>
-            </button>
-          )}
-        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="text-slate-500 hover:text-white transition-colors"
+          >
+            <span className="material-symbols-outlined text-base">close</span>
+          </button>
+        )}
       </div>
 
       <div className="px-2 py-2 border-b border-slate-800 flex gap-2 bg-slate-900/50">
-        <button
-          onClick={onTogglePause}
-          className={`flex-1 ${
-            isPaused
-              ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-              : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
-          } text-[10px] py-1.5 rounded transition-colors flex items-center justify-center gap-1 font-semibold uppercase tracking-wider`}
-        >
-          <span className="material-symbols-outlined text-base">
-            {isPaused ? "play_arrow" : "pause"}
-          </span>
-          {isPaused ? "Resume" : "Pause"}
-        </button>
         <button
           onClick={onClear}
           className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-red-400 text-[10px] py-1.5 rounded border border-slate-700 transition-colors flex items-center justify-center gap-1 font-semibold uppercase tracking-wider"
@@ -228,11 +199,6 @@ const Debugger: React.FC<DebuggerProps> = ({
             <span className="font-mono">
               {filteredLogs.length} / {logs.length} logs
             </span>
-            {isPaused && (
-              <span className="text-amber-500 font-semibold uppercase tracking-wider">
-                ⏸ Paused
-              </span>
-            )}
           </div>
           <div className="flex items-center gap-2">
             {filter !== "ALL" && (
