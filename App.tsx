@@ -75,7 +75,19 @@ const App: React.FC = () => {
     };
   };
 
+  // Cache for socket coordinates to avoid repeated DOM queries
+  const socketCache = useRef<Map<string, { x: number; y: number; timestamp: number }>>(new Map());
+
   const getSocketCoords = (nodeId: string, side: "left" | "right") => {
+    const cacheKey = `${nodeId}-${side}`;
+    const now = Date.now();
+    const cached = socketCache.current.get(cacheKey);
+    
+    // Use cache if valid (less than 16ms old, ~60fps)
+    if (cached && now - cached.timestamp < 16) {
+      return { x: cached.x, y: cached.y };
+    }
+
     const el = document.getElementById(`socket-${side}-${nodeId}`);
     if (el && workspaceRef.current) {
       const socketRect = el.getBoundingClientRect();
@@ -84,18 +96,23 @@ const App: React.FC = () => {
       // Since the workspace is transformed by zoom, we need to divide by zoom
       const relativeX = socketRect.left - workspaceRect.left;
       const relativeY = socketRect.top - workspaceRect.top;
-      return {
+      const coords = {
         x: (relativeX + workspaceRef.current.scrollLeft) / zoom,
         y: (relativeY + workspaceRef.current.scrollTop) / zoom,
       };
+      // Cache the result
+      socketCache.current.set(cacheKey, { ...coords, timestamp: now });
+      return coords;
     }
     // Fallback if element not found (e.g. during first render)
     const node = nodes.find((n) => n.id === nodeId);
     if (!node) return { x: 0, y: 0 };
-    return {
+    const coords = {
       x: side === "right" ? node.position.x + NODE_WIDTH : node.position.x,
       y: node.position.y + HEADER_CENTER_Y,
     };
+    socketCache.current.set(cacheKey, { ...coords, timestamp: now });
+    return coords;
   };
 
   const handleNodeDrag = useCallback((id: string, x: number, y: number) => {
@@ -420,7 +437,7 @@ const App: React.FC = () => {
             height: workspaceSize.height,
             transform: `scale(${zoom})`,
             transformOrigin: "top left",
-            transition: "transform 0.2s ease-out",
+            transition: "transform 0.05s ease-out",
           }}
           className="relative"
         >
@@ -459,7 +476,7 @@ const App: React.FC = () => {
                     stroke={color}
                     strokeWidth="4"
                     strokeLinecap="round"
-                    className="transition-all duration-300 opacity-60 group-hover/conn:opacity-100"
+                    className="transition-opacity duration-150 opacity-60 group-hover/conn:opacity-100"
                   />
                   <g
                     className="cursor-pointer"
@@ -470,7 +487,7 @@ const App: React.FC = () => {
                       cy={my}
                       r="14"
                       fill="#0f172a"
-                      className="opacity-0 group-hover/conn:opacity-100 shadow-2xl transition-all stroke-slate-700"
+                      className="opacity-0 group-hover/conn:opacity-100 shadow-2xl transition-opacity duration-150 stroke-slate-700"
                       strokeWidth="1"
                     />
                     <text

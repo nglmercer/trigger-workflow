@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { NodeType, WorkflowNode, Action } from "../types";
 import Socket from "./Socket";
 import ActionGalleryModal, { ActionTemplate } from "./ActionGalleryModal";
@@ -71,6 +71,7 @@ const Node: React.FC<NodeProps> = ({
 }) => {
   const [dragging, setDragging] = useState(false);
   const [rel, setRel] = useState({ x: 0, y: 0 });
+  const nodeRef = useRef<HTMLDivElement>(null);
   const [showGallery, setShowGallery] = useState(false);
   const [showConditionGallery, setShowConditionGallery] = useState(false);
   const [editingActionIndex, setEditingActionIndex] = useState<number | null>(
@@ -93,15 +94,21 @@ const Node: React.FC<NodeProps> = ({
     e.preventDefault();
   };
 
+  // Use requestAnimationFrame for smoother dragging
   React.useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!dragging) return;
-      onDrag(node.id, e.pageX - rel.x, e.pageY - rel.y);
+      
+      // Use requestAnimationFrame for smoother updates
+      requestAnimationFrame(() => {
+        onDrag(node.id, e.pageX - rel.x, e.pageY - rel.y);
+      });
     };
+    
     const handleMouseUp = () => setDragging(false);
 
     if (dragging) {
-      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mousemove", handleMouseMove, { passive: false });
       window.addEventListener("mouseup", handleMouseUp);
     }
     return () => {
@@ -200,10 +207,15 @@ const Node: React.FC<NodeProps> = ({
 
   return (
     <div
+      ref={nodeRef}
       id={`node-${node.id}`}
-      style={{ left: node.position.x, top: node.position.y }}
-      className={`absolute w-80 bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden ring-1 ring-white/5 transition-all group ${
-        dragging ? "z-50 scale-[1.02] border-white/20" : "z-10"
+      style={{ 
+        left: node.position.x, 
+        top: node.position.y,
+        transform: dragging ? 'scale(1.02)' : 'scale(1)',
+      }}
+      className={`absolute w-80 bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden ring-1 ring-white/5 group ${
+        dragging ? "z-50 border-white/20 transition-transform duration-75" : "z-10"
       } ${!node.enabled ? "opacity-70 grayscale-[0.3]" : ""}`}
       onMouseDown={onMouseDown}
     >
