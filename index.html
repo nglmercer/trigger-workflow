@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Agnostic Trigger</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+            rel="stylesheet"
+        />
+        <script>
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "background-dark": "#0a0f18",
+                            primary: "#135bec",
+                            trigger: "#a855f7",
+                            condition: "#3b82f6",
+                            action: "#10b981",
+                            "slate-850": "#151e2d",
+                            "slate-950": "#080d16",
+                        },
+                        fontFamily: {
+                            sans: ["Inter", "sans-serif"],
+                            mono: ["JetBrains Mono", "monospace"],
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            .material-symbols-outlined {
+                font-variation-settings:
+                    "FILL" 0,
+                    "wght" 400,
+                    "GRAD" 0,
+                    "opsz" 24;
+            }
+            .dot-grid {
+                background-image: radial-gradient(#1e293b 1px, transparent 1px);
+                background-size: 32px 32px;
+            }
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #334155;
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #475569;
+            }
+            .node-enter {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            .node-enter-active {
+                opacity: 1;
+                transform: scale(1);
+                transition: all 200ms ease-out;
+            }
+        </style>
+        <script type="importmap">
+            {
+                "imports": {
+                    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+                    "react/": "https://esm.sh/react@^19.2.3/",
+                    "react": "https://esm.sh/react@^19.2.3",
+                    "js-yaml": "https://esm.sh/js-yaml@^4.1.0",
+
+                    "react-dom": "https://esm.sh/react-dom@^19.2.3"
+                }
+            }
+        </script>
+    </head>
+    <body class="bg-background-dark text-slate-100 antialiased overflow-hidden">
+        <div id="root"></div>
+        <script type="module" src="/index.tsx"></script>
+    </body>
+</html>

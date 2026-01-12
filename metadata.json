@@ -1,0 +1,5 @@
+{
+  "name": "Agnostic Trigger Workflow Builder",
+  "description": "A high-fidelity node-based automation editor with triggers, conditions, and actions, featuring a sleek dark HUD and live execution debugger.",
+  "requestFramePermissions": []
+}
