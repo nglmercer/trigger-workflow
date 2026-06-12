@@ -1,20 +1,14 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 # Agnostic Trigger Workflow Builder
 
 A powerful visual workflow builder for streaming automation with intelligent condition filtering and gift management.
 
 ## Features
 
-- 🎯 **Visual Workflow Builder** - Drag and drop interface for creating automated workflows
-- 🎁 **Gift Selector** - Intelligent gift selection with async/await fetching and search
-- 📋 **Condition Gallery** - Pre-built filter templates for common streaming scenarios
-- 🔀 **Multi-Condition Logic** - Support for SIMPLE and GROUP modes with AND/OR logic
-- 🎨 **Beautiful UI** - Dark mode, smooth animations, and responsive design
-- 🐛 **Live Debugger** - Real-time workflow simulation and execution logs
-- 📝 **YAML Export** - Export your workflows as YAML configuration
+-  **Visual Workflow Builder** - Drag and drop interface for creating automated workflows
+-  **Condition Gallery** - Pre-built filter templates for common streaming scenarios
+-  **Multi-Condition Logic** - Support for SIMPLE and GROUP modes with AND/OR logic
+-  **Live Debugger** - Real-time workflow simulation and execution logs
+-  **YAML Export** - Export your workflows as YAML configuration
 
 ## Quick Start
 
